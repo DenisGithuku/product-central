@@ -1,0 +1,40 @@
+{
+  "name": "product-central",
+  "version": "1.0.0",
+  "description": "Find the products you need, when you need them.",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/DenisGithuku/product-central.git"
+  },
+  "keywords": [
+    "rest",
+    "http",
+    "api",
+    "dev",
+    "node",
+    "express",
+    "mongodb"
+  ],
+  "author": "Denis Githuku",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/DenisGithuku/product-central/issues"
+  },
+  "homepage": "https://github.com/DenisGithuku/product-central#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^5.13.17"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22"
+  }
+}
