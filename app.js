@@ -5,7 +5,7 @@ const xssClean = require('xss-clean')
 const express = require('express')
 const app = new express()
 
-const AppError = require(`${__dirname}/util/appError`)
+const AppError = require(`${__dirname}/util/AppError`)
 const GlobalErrorHandler = require(`${__dirname}/controllers/ErrorController`)
 
 const ProductsRouter = require(`${__dirname}/router/ProductRouter`)
