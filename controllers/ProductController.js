@@ -1,5 +1,7 @@
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
+const ProductModel = require(`${__dirname}/../models/ProductModel`)
+
 exports.GetAllProducts = (req, res, next) => {
     res
         .status(200)
