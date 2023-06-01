@@ -22,15 +22,9 @@ const ProductSchema = new mongoose.Schema({
     },
     image: String,
     reviews: Array,
-    rating: {
-        type: Number,
-        default: 1.0,
-        min: [1.0, 'Rating must not be less than 1.0'],
-        max: [5.0, 'Rating must not exceed 5.0']
-    }
 }, {
     toJSON: true,
     toObject: true
 })
 
-module.exports = ProductModel = mongoose.model('ProductModel', ProductSchema)
+module.exports = Product = mongoose.model('Product', ProductSchema)
