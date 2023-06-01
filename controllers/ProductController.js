@@ -2,14 +2,17 @@ const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
 
-exports.GetAllProducts = (req, res, next) => {
+exports.GetAllProducts = CatchAsync( async (req, res, next) => {
+    const products = await Product.find()
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'All Products appear here'
+            data: {
+                products
+            }
         })
-}
+})
 
 exports.GetProductCategories = (req, res, next) => {
     res
