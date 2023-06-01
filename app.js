@@ -9,6 +9,7 @@ const AppError = require(`${__dirname}/util/AppError`)
 const GlobalErrorHandler = require(`${__dirname}/controllers/ErrorController`)
 
 const ProductsRouter = require(`${__dirname}/router/ProductRouter`)
+const ReviewsRouter = require(`${__dirname}/router/ReviewRouter`)
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 })
 
 app.use("/api/v1/products", ProductsRouter)
+app.use("/api/v1/reviews", ReviewsRouter)
 
 app.use('*', (req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server. Please fix your route!`, 500))
