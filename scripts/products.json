@@ -1,0 +1,149 @@
+[
+  {
+    "name": "iPhone 13",
+    "inStock": true,
+    "category": "electronics",
+    "price": 999.99,
+    "description": "The latest iPhone with advanced features."
+  },
+  {
+    "name": "Samsung QLED TV",
+    "inStock": true,
+    "category": "electronics",
+    "price": 1499.99,
+    "description": "A high-quality QLED TV with stunning visuals."
+  },
+  {
+    "name": "Nike Air Max 270",
+    "inStock": true,
+    "category": "footwear",
+    "price": 129.99,
+    "description": "Comfortable and stylish sneakers by Nike."
+  },
+  {
+    "name": "Sony WH-1000XM4",
+    "inStock": false,
+    "category": "electronics",
+    "price": 349.99,
+    "description": "Premium noise-canceling headphones for immersive audio experience."
+  },
+  {
+    "name": "Canon EOS R5",
+    "inStock": true,
+    "category": "electronics",
+    "price": 3999.99,
+    "description": "A professional-grade mirrorless camera for stunning photography and videography."
+  },
+  {
+    "name": "Levi's 501 Jeans",
+    "inStock": true,
+    "category": "apparel",
+    "price": 79.99,
+    "description": "Classic and timeless jeans by Levi's."
+  },
+  {
+    "name": "Apple Watch Series 7",
+    "inStock": true,
+    "category": "electronics",
+    "price": 399.99,
+    "description": "A versatile smartwatch with a larger display and advanced health features."
+  },
+  {
+    "name": "Adidas Ultraboost",
+    "inStock": true,
+    "category": "footwear",
+    "price": 159.99,
+    "description": "Responsive running shoes with Boost cushioning technology."
+  },
+  {
+    "name": "Dell XPS 13",
+    "inStock": true,
+    "category": "electronics",
+    "price": 1399.99,
+    "description": "A compact and powerful laptop for productivity and multimedia."
+  },
+  {
+    "name": "Amazon Echo Dot",
+    "inStock": true,
+    "category": "electronics",
+    "price": 49.99,
+    "description": "A smart speaker with Alexa voice assistant for hands-free control."
+  },
+  {
+    "name": "GoPro HERO9 Black",
+    "inStock": true,
+    "category": "electronics",
+    "price": 349.99,
+    "description": "A versatile action camera with stunning 5K video and 20MP photos."
+  },
+  {
+    "name": "Samsung Galaxy S21",
+    "inStock": true,
+    "category": "electronics",
+    "price": 799.99,
+    "description": "A flagship smartphone with powerful performance and a stunning display."
+  },
+  {
+    "name": "Lululemon Align Leggings",
+    "inStock": true,
+    "category": "apparel",
+    "price": 98.99,
+    "description": "Buttery-soft and lightweight leggings for active lifestyles."
+  },
+  {
+    "name": "Bose QuietComfort Earbuds",
+    "inStock": true,
+    "category": "electronics",
+    "price": 279.99,
+    "description": "Wireless earbuds with exceptional noise cancellation and immersive sound."
+  },
+  {
+    "name": "Sony PlayStation 5",
+    "inStock": false,
+    "category": "gaming",
+    "price": 499.99,
+    "description": "Next-generation gaming console with ultra-fast loading times and stunning visuals."
+  },
+  {
+    "name": "Patagonia Better Sweater",
+    "inStock": true,
+    "category": "apparel",
+    "price": 139.99,
+    "description": "A cozy and sustainable sweater for outdoor adventures."
+  },
+  {
+    "name": "Microsoft Surface Pro 7",
+    "inStock": true,
+    "category": "electronics",
+    "price": 899.99,
+    "description": "A versatile 2-in-1 laptop with a detachable touchscreen and powerful performance."
+  },
+  {
+    "name": "Dyson V11 Vacuum Cleaner",
+    "inStock": true,
+    "category": "home and kitchen",
+    "price": 599.99,
+    "description": "A powerful cordless vacuum cleaner with intelligent suction and advanced filtration."
+  },
+  {
+    "name": "Fender Stratocaster",
+    "inStock": true,
+    "category": "musical instruments",
+    "price": 1299.99,
+    "description": "An iconic electric guitar known for its versatile sound and playability."
+  },
+  {
+    "name": "Nintendo Switch",
+    "inStock": true,
+    "category": "gaming",
+    "price": 299.99,
+    "description": "A hybrid gaming console for gaming at home and on-the-go."
+  },
+  {
+    "name": "Fitbit Versa 3",
+    "inStock": true,
+    "category": "electronics",
+    "price": 229.99,
+    "description": "A feature-packed smartwatch with built-in GPS and advanced health tracking."
+  }
+]
