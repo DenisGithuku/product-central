@@ -38,29 +38,32 @@ exports.GetProductById = CatchAsync(async (req, res, next) => {
 })
 
 exports.AddNewProduct = CatchAsync( async (req, res, next) => {
+    await Product.create(req.body)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Add new product'
+            message: 'Successfully added new product'
         })
 })
 
-exports.DeleteProduct = (req, res, next) => {
+exports.DeleteProduct = CatchAsync(async (req, res, next) => {
+    await Product.findByIdAndDelete(req.params.id)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Delete product route'
+            message: 'Product deleted successfully'
         })
-}
+})
 
-exports.UpdateProduct = (req, res, next) => {
+exports.UpdateProduct = CatchAsync(async (req, res, next) => {
+    await Product.findByIdAndUpdate(req.params.id, req.body)
     res
         .status(200)
         .json({
             status: 'success',
             message: 'Update route'
         })
-}
+})
 
