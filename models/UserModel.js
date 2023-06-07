@@ -51,7 +51,7 @@ UserSchema.pre('save', async function(next) {
     next()
 })
 
-UserSchema('pre', function(next) {
+UserSchema.pre('save', function(next) {
     // skip if password is not modified or document not new
     if (!this.isModified('password') || this.isNew) return next()
     this.passwordChangedAt = Date.now() - 1000
