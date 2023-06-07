@@ -25,39 +25,45 @@ exports.GetProductCategories = (req, res, next) => {
         })
 }
 
-exports.GetProductById = (req, res, next) => {
+exports.GetProductById = CatchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Get single product by id'
-        })
-}
-
-exports.AddNewProduct = CatchAsync( async (req, res, next) => {
-    res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Add new product'
+            data: {
+                product
+            }
         })
 })
 
-exports.DeleteProduct = (req, res, next) => {
+exports.AddNewProduct = CatchAsync( async (req, res, next) => {
+    await Product.create(req.body)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Delete product route'
+            message: 'Successfully added new product'
         })
-}
+})
 
-exports.UpdateProduct = (req, res, next) => {
+exports.DeleteProduct = CatchAsync(async (req, res, next) => {
+    await Product.findByIdAndDelete(req.params.id)
+    res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Product deleted successfully'
+        })
+})
+
+exports.UpdateProduct = CatchAsync(async (req, res, next) => {
+    await Product.findByIdAndUpdate(req.params.id, req.body)
     res
         .status(200)
         .json({
             status: 'success',
             message: 'Update route'
         })
-}
+})
 

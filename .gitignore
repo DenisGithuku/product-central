@@ -135,3 +135,8 @@ dist
 
 # env files
 config.env
+
+#editor http client
+http-client.env.json
+rest-api.http
+scratch.http
