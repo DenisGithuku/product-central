@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
+const net = require("net");
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -13,8 +15,12 @@ const UserSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        validate: validator.isEmail,
+        validate: [validator.isEmail, "Please use a valid email address"],
         required: [true, 'You must provide an email address']
+    },
+    active: {
+        type: Boolean,
+        default: true
     },
     password: {
         type: String,
@@ -30,11 +36,35 @@ const UserSchema = new mongoose.Schema({
             },
             message: "Passwords do not match"
         }
-    }
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetTokenExpiresAt: Date
 }, {
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
 })
 
+UserSchema.pre('save', async function(next) {
+    this.password = await bcrypt.hash(this.password, 12)
+    this.confirmPassword = undefined;
+    next()
+})
+
+UserSchema('pre', function(next) {
+    // skip if password is not modified or document not new
+    if (!this.isModified('password') || this.isNew) return next()
+    this.passwordChangedAt = Date.now() - 1000
+    next()
+})
+
+UserSchema.pre(/^find/, function(next) {
+    this.select({active: {$ne: false}})
+    next()
+})
+
+UserSchema.methods.CheckPassword = (candidatePassword, userPassword) => {
+    return bcrypt.compare(candidatePassword, userPassword)
+}
 module.exports =  User = mongoose.model('User', UserSchema)
 
