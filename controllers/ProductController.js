@@ -25,14 +25,17 @@ exports.GetProductCategories = (req, res, next) => {
         })
 }
 
-exports.GetProductById = (req, res, next) => {
+exports.GetProductById = CatchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Get single product by id'
+            data: {
+                product
+            }
         })
-}
+})
 
 exports.AddNewProduct = CatchAsync( async (req, res, next) => {
     res
