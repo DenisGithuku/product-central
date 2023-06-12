@@ -1,6 +1,22 @@
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
+const multer = require('multer')
+const {mongo} = require("mongoose");
+
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/img/products')
+    },
+    filename: (req, file, cb) => {
+        //product-9097783405454jk5d-89888090.jpeg
+        const id = mongo.ObjectId()
+        const ext = file.mimetype.split("/")[1]
+        cb(null, `product-${id}-${Date.now()}.${ext}`)
+    }
+})
+
+
 
 exports.GetAllProducts = CatchAsync( async (req, res, next) => {
     const products = await Product.find()
