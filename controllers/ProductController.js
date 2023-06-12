@@ -16,9 +16,22 @@ const multerStorage = multer.diskStorage({
     }
 })
 
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true)
+    } else {
+        cb(new AppError('Please upload a valid image', 400), false)
+    }
+}
 
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerStorage
+})
 
-exports.GetAllProducts = CatchAsync( async (req, res, next) => {
+exports.UploadFilePhoto = upload.single('image')
+
+exports.GetAllProducts = CatchAsync(async (req, res, next) => {
     const products = await Product.find()
     res
         .status(200)
@@ -50,7 +63,7 @@ exports.GetProductById = (req, res, next) => {
         })
 }
 
-exports.AddNewProduct = CatchAsync( async (req, res, next) => {
+exports.AddNewProduct = CatchAsync(async (req, res, next) => {
     res
         .status(200)
         .json({
