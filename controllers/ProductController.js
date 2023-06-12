@@ -4,6 +4,17 @@ const Product = require(`${__dirname}/../models/ProductModel`)
 const multer = require('multer')
 const mongoose = require("mongoose");
 
+const filterObject = (filterBody, ...allowedFields) => {
+    const newObject = {}
+    Object.keys(filterBody).forEach(field => {
+        if (allowedFields.includes(field)) {
+            newObject[field] = filterBody[field]
+        }
+    })
+
+    return newObject
+}
+
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/img/products')
@@ -64,7 +75,7 @@ exports.GetProductById = (req, res, next) => {
 }
 
 exports.AddNewProduct = CatchAsync(async (req, res, next) => {
-    const productInfo = { "image": req.file.filename, ...req.body}
+    const productInfo = {"image": req.file.filename, ...req.body}
     await Product.create(productInfo)
     res
         .status(200)
@@ -84,12 +95,14 @@ exports.DeleteProduct = CatchAsync(async (req, res, next) => {
         })
 })
 
-exports.UpdateProduct = (req, res, next) => {
+exports.UpdateProduct = CatchAsync(async (req, res, next) => {
+    const filteredBody = filterObject(req.body, 'name', 'inStock', 'price', 'description')
+    if (req.file) filteredBody.image = req.file.filename
+    await Product.findByIdAndUpdate(req.params.id, filteredBody)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Update route'
+            message: 'Product updated successfully'
         })
-}
-
+})

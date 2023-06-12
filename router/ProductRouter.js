@@ -23,7 +23,7 @@ router
 router
     .route("/:id")
     .get(GetProductById)
-    .patch(UpdateProduct)
+    .patch(UploadFilePhoto, UpdateProduct)
     .delete(DeleteProduct)
 
 module.exports = router
