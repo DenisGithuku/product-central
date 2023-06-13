@@ -1,6 +1,7 @@
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
+const Category = require(`${__dirname}/../models/CategoryModel`)
 const multer = require('multer')
 const mongoose = require("mongoose");
 
@@ -56,23 +57,31 @@ exports.GetAllProducts = CatchAsync(async (req, res, next) => {
         })
 })
 
-exports.GetProductCategories = (req, res, next) => {
+exports.GetProductCategories = CatchAsync(async (req, res, next) => {
+    const categories = await Category.find()
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Get product categories'
+            requestedAt: req.requestedAt,
+            data: {
+                categories
+            }
         })
-}
+})
 
-exports.GetProductById = (req, res, next) => {
+exports.GetProductById = CatchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Get single product by id'
+            requestedAt: req.requestedAt,
+            data: {
+                product
+            }
         })
-}
+})
 
 exports.AddNewProduct = CatchAsync(async (req, res, next) => {
     const productInfo = {"image": req.file.filename, ...req.body}
