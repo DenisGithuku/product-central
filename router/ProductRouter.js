@@ -8,6 +8,7 @@ const {
     UpdateProduct,
     DeleteProduct
 } = require(`${__dirname}/../controllers/ProductController`)
+const {UploadFilePhoto} = require("../controllers/ProductController");
 
 
 router
@@ -17,12 +18,12 @@ router
 router
     .route("/")
     .get(GetAllProducts)
-    .post(AddNewProduct)
+    .post(UploadFilePhoto, AddNewProduct)
 
 router
     .route("/:id")
     .get(GetProductById)
-    .patch(UpdateProduct)
+    .patch(UploadFilePhoto, UpdateProduct)
     .delete(DeleteProduct)
 
 module.exports = router

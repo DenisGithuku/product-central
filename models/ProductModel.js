@@ -11,9 +11,9 @@ const ProductSchema = new mongoose.Schema({
         default: true
     },
     category: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
         required: [true, 'A product must be in at least one category'],
-        enum: ['footwear', 'electronics', 'apparel', 'gaming', 'musical instruments', 'home and kitchen']
+        ref: 'Category'
     },
     price: {
         type: Number,

@@ -1,7 +1,6 @@
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
-const Category = require(`${__dirname}./../models/CategoryModel`)
 const multer = require('multer')
 const mongoose = require("mongoose");
 
@@ -57,32 +56,23 @@ exports.GetAllProducts = CatchAsync(async (req, res, next) => {
         })
 })
 
-exports.GetProductCategories = CatchAsync(async (req, res, next) => {
-    const categories = await Category.find()
+exports.GetProductCategories = (req, res, next) => {
     res
         .status(200)
         .json({
             status: 'success',
-            results: categories.length,
-            requestedAt: req.requestedAt,
-            data: {
-                categories
-            }
+            message: 'Get product categories'
         })
-})
+}
 
-exports.GetProductById = CatchAsync(async (req, res, next) => {
-    const product = await Product.findById(req.params.id)
+exports.GetProductById = (req, res, next) => {
     res
         .status(200)
         .json({
             status: 'success',
-            requestedAt: req.requestedAt,
-            data: {
-                product
-            }
+            message: 'Get single product by id'
         })
-})
+}
 
 exports.AddNewProduct = CatchAsync(async (req, res, next) => {
     const productInfo = {"image": req.file.filename, ...req.body}
@@ -101,7 +91,7 @@ exports.DeleteProduct = CatchAsync(async (req, res, next) => {
         .status(200)
         .json({
             status: 'success',
-            message: 'Product deleted successfully'
+            message: 'Delete product route'
         })
 })
 
