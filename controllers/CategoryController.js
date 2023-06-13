@@ -15,3 +15,13 @@ exports.GetProductCategories = CatchAsync(async (req, res, next) => {
             }
         })
 })
+
+exports.AddCategory = CatchAsync(async (req, res, next) => {
+    await Category.create(req.body)
+    res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Category added successfully'
+        })
+})
