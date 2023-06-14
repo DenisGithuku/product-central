@@ -1,6 +1,8 @@
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
+const Category = require(`${__dirname}/../models/CategoryModel`)
+const ApiFeatures = require(`${__dirname}/../util/ApiFeatures`)
 const multer = require('multer')
 const mongoose = require("mongoose");
 
@@ -43,7 +45,17 @@ const upload = multer({
 exports.UploadFilePhoto = upload.single('image')
 
 exports.GetAllProducts = CatchAsync(async (req, res, next) => {
-    const products = await Product.find()
+    if (req.query.category) {
+        const category = await Category.find({slug: req.query.category})
+        req.query.category = category[0].id
+    }
+    console.log(req.query)
+    const features = new ApiFeatures(Product.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate()
+    const products = await features.query
     res
         .status(200)
         .json({
