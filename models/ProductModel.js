@@ -10,13 +10,12 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    category: [
+    category:
         {
             type: mongoose.Schema.ObjectId,
             required: [true, 'A product must be in at least one category'],
             ref: 'Category'
-        }
-    ],
+        },
     price: {
         type: Number,
         required: [true, 'A product must contain a price']
