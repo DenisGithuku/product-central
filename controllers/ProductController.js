@@ -2,6 +2,7 @@ const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const Product = require(`${__dirname}/../models/ProductModel`)
 const Category = require(`${__dirname}/../models/CategoryModel`)
+const ApiFeatures = require(`${__dirname}/../util/ApiFeatures`)
 const multer = require('multer')
 const mongoose = require("mongoose");
 
@@ -44,7 +45,17 @@ const upload = multer({
 exports.UploadFilePhoto = upload.single('image')
 
 exports.GetAllProducts = CatchAsync(async (req, res, next) => {
-    const products = await Product.find()
+    if (req.query.category) {
+        // map to id to category string
+        const category = await Category.find({slug: req.query.category})
+        req.query.category = category[0].id
+    }
+    const features = new ApiFeatures(Product.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate()
+    const products = await features.query
     res
         .status(200)
         .json({
@@ -57,18 +68,6 @@ exports.GetAllProducts = CatchAsync(async (req, res, next) => {
         })
 })
 
-exports.GetProductCategories = CatchAsync(async (req, res, next) => {
-    const categories = await Category.find()
-    res
-        .status(200)
-        .json({
-            status: 'success',
-            requestedAt: req.requestedAt,
-            data: {
-                categories
-            }
-        })
-})
 
 exports.GetProductById = CatchAsync(async (req, res, next) => {
     const product = await Product.findById(req.params.id)
@@ -105,6 +104,7 @@ exports.DeleteProduct = CatchAsync(async (req, res, next) => {
 })
 
 exports.UpdateProduct = CatchAsync(async (req, res, next) => {
+    //restrict updatable fields
     const filteredBody = filterObject(req.body, 'name', 'inStock', 'price', 'description')
     if (req.file) filteredBody.image = req.file.filename
     await Product.findByIdAndUpdate(req.params.id, filteredBody)

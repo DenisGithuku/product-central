@@ -5,7 +5,7 @@ const CategorySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'A category must contain a name'],
-        maxlength: 30
+        maxlength: [30, 'Name must not be greater than 30 characters']
     },
     slug: String
 }, {

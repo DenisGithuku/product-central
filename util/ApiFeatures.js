@@ -1,3 +1,5 @@
+const {Query} = require("mongoose");
+
 class ApiFeatures {
     constructor(query, queryStr) {
         this.query = query
@@ -10,13 +12,14 @@ class ApiFeatures {
         excludedFields.forEach(el => delete queryObj[el])
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace((/\b(gte|gt|lte|lt)\b/g), match => `$${match}`)
-        this.query = this.query.find(JSON.parse(queryStr))
+        const filterObj = JSON.parse(queryStr)
+        this.query = this.query.find(filterObj)
         return this
     }
 
     sort() {
-        if(this.queryStr.sort()) {
-            let sortBy = this.queryStr.split(',').join(' ')
+        if (this.queryStr.sort) {
+            let sortBy = this.queryStr.sort.split(',').join(' ')
             if (sortBy) {
                 this.query = this.query.sort(sortBy)
             }

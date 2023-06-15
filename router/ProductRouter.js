@@ -4,16 +4,11 @@ const {
     GetAllProducts,
     GetProductById,
     AddNewProduct,
+    UploadFilePhoto,
     GetProductCategories,
     UpdateProduct,
     DeleteProduct
 } = require(`${__dirname}/../controllers/ProductController`)
-const {UploadFilePhoto} = require("../controllers/ProductController");
-
-
-router
-    .route("/categories")
-    .get(GetProductCategories)
 
 router
     .route("/")

@@ -10,11 +10,12 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    category: {
-        type: mongoose.Schema.ObjectId,
-        required: [true, 'A product must be in at least one category'],
-        ref: 'Category'
-    },
+    category:
+        {
+            type: mongoose.Schema.ObjectId,
+            required: [true, 'A product must be in at least one category'],
+            ref: 'Category'
+        },
     price: {
         type: Number,
         required: [true, 'A product must contain a price']
@@ -31,13 +32,11 @@ const ProductSchema = new mongoose.Schema({
     toObject: {virtuals: true}
 })
 
-ProductSchema.pre('save', function (next) {
-    this.category = slugify(this.category, {lower: true})
-    next()
-});
-
 ProductSchema.pre(/^find/, function (next) {
-    this.find().select("-__v")
+    this.populate({
+        path: 'category',
+        select: '-__v'
+    })
     next()
 })
 
