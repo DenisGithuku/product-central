@@ -46,10 +46,10 @@ exports.UploadFilePhoto = upload.single('image')
 
 exports.GetAllProducts = CatchAsync(async (req, res, next) => {
     if (req.query.category) {
+        // map to id to category string
         const category = await Category.find({slug: req.query.category})
         req.query.category = category[0].id
     }
-    console.log(req.query)
     const features = new ApiFeatures(Product.find(), req.query)
         .filter()
         .sort()
@@ -104,6 +104,7 @@ exports.DeleteProduct = CatchAsync(async (req, res, next) => {
 })
 
 exports.UpdateProduct = CatchAsync(async (req, res, next) => {
+    //restrict updatable fields
     const filteredBody = filterObject(req.body, 'name', 'inStock', 'price', 'description')
     if (req.file) filteredBody.image = req.file.filename
     await Product.findByIdAndUpdate(req.params.id, filteredBody)

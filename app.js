@@ -3,6 +3,7 @@ const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xssClean = require('xss-clean')
 const express = require('express')
+const rateLimit = require('express-rate-limit')
 const app = new express()
 
 const AppError = require(`${__dirname}/util/AppError`)
@@ -18,6 +19,14 @@ if (process.env.NODE_ENV === 'development') {
 
 // Security headers
 app.use(helmet())
+
+const limiter = rateLimit({
+    max: 1000,
+    windowMS: 60 * 60 * 100,
+    message: 'Too many request from this IP, please try again in an hour'
+})
+
+app.use('/api', limiter)
 
 app.use(express.json({limit: '10kb'}))
 
