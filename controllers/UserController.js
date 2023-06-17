@@ -2,13 +2,21 @@ const User = require(`${__dirname}/../models/UserModel`)
 const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 
-exports.RegisterUser = CatchAsync(async (req, res, next) => {
-    await User.create(req.body)
+const filterBody = (userObj, ...allowedFields) => {
+    const newObject = {}
+    Object.keys(userObj).forEach(el => {
+        if (allowedFields.includes(el)) newObject[el] = userObj[el]
+    })
+    return newObject
+}
+
+exports.GetAllUsers = CatchAsync(async (req, res, next) => {
+    const users = await User.find()
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Account created successfully'
+            data: {users}
         })
 })
 
@@ -23,7 +31,29 @@ exports.GetUserDetails = CatchAsync(async (req, res, next) => {
 })
 
 exports.UpdateUser = CatchAsync(async (req, res, next) => {
-    const newUser = await User.findByIdAndUpdate(req.params.id, req.body)
+    /*
+    1. check if user sent password
+     */
+    if (req.body.password || req.body.confirmPassword) {
+        return next(new AppError('Please use /reset-password route for password reset', 400))
+    }
+
+    /*
+    2. filter unwanted fields
+     */
+    const userObj = filterBody(req.body, 'name', 'email')
+
+    /*
+    3. update user
+     */
+    const newUser = await User.findByIdAndUpdate(req.params.id, userObj, {
+        new: true,
+        runValidators: true
+    })
+
+    /*
+    4. send response
+     */
     res
         .status(200)
         .json({

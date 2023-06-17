@@ -10,10 +10,13 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         required: [true, 'You must provide a role'],
-        enum: ['user', 'admin']
+        enum: ['user', 'admin'],
+        default: 'user'
     },
     email: {
         type: String,
+        unique: true,
+        lowercase: true,
         validate: [validator.isEmail, "Please use a valid email address"],
         required: [true, 'You must provide an email address']
     },
@@ -25,13 +28,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Password required"],
         minlength: 6,
+        select: false
     },
     confirmPassword: {
         type: String,
         required: [true, 'Password confirmation required'],
         validate: {
             validator: function (value) {
-                return value === this.confirmPassword
+                return value === this.password
             },
             message: "Passwords do not match"
         }
@@ -57,13 +61,23 @@ UserSchema.pre('save', function(next) {
     next()
 })
 
-UserSchema.pre(/^find/, function(next) {
-    this.select({active: {$ne: false}})
+UserSchema.pre(/^find/, function (next) {
+    this.find({active: {$ne: false}})
     next()
 })
 
 UserSchema.methods.CheckPassword = (candidatePassword, userPassword) => {
     return bcrypt.compare(candidatePassword, userPassword)
 }
-module.exports =  User = mongoose.model('User', UserSchema)
+
+UserSchema.methods.PasswordChangedAfter = function (jwtTimestamp) {
+    if (this.passwordChangedAt) {
+        const passwordChangeTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10)
+        return passwordChangeTimestamp > jwtTimestamp
+    }
+    /* password never changed */
+    return false
+}
+
+module.exports = User = mongoose.model('User', UserSchema)
 
