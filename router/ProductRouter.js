@@ -4,9 +4,10 @@ const {
     GetAllProducts,
     GetProductById,
     AddNewProduct,
-    UploadFilePhoto,
+    UploadProductPhoto,
     UpdateProduct,
-    DeleteProduct
+    DeleteProduct,
+    ResizeProductPhoto
 } = require(`${__dirname}/../controllers/ProductController`)
 const {RestrictTo, Protect} = require(`${__dirname}/../controllers/AuthController`)
 
@@ -14,12 +15,12 @@ const {RestrictTo, Protect} = require(`${__dirname}/../controllers/AuthControlle
 router
     .route("/")
     .get(Protect, GetAllProducts)
-    .post(Protect, RestrictTo('admin'), UploadFilePhoto, AddNewProduct)
+    .post(Protect, RestrictTo('admin'), UploadProductPhoto, ResizeProductPhoto, AddNewProduct)
 
 router
     .route("/:id")
     .get(Protect, GetProductById)
-    .patch(Protect, RestrictTo('admin'), UploadFilePhoto, UpdateProduct)
+    .patch(Protect, RestrictTo('admin'), UploadProductPhoto, ResizeProductPhoto, UpdateProduct)
     .delete(Protect, RestrictTo('admin'), DeleteProduct)
 
 module.exports = router

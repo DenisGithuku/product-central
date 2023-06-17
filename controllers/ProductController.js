@@ -5,6 +5,7 @@ const Category = require(`${__dirname}/../models/CategoryModel`)
 const ApiFeatures = require(`${__dirname}/../util/ApiFeatures`)
 const multer = require('multer')
 const mongoose = require("mongoose");
+const sharp = require('sharp')
 
 const filterObject = (filterBody, ...allowedFields) => {
     const newObject = {}
@@ -17,17 +18,20 @@ const filterObject = (filterBody, ...allowedFields) => {
     return newObject
 }
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/img/products')
-    },
-    filename: (req, file, cb) => {
-        //product-9097783405454jk5d-89888090.jpeg
-        const id = new mongoose.Types.ObjectId()
-        const ext = file.mimetype.split("/")[1]
-        cb(null, `product-${id}-${Date.now()}.${ext}`)
-    }
-})
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'public/img/products')
+//     },
+//     filename: (req, file, cb) => {
+//         //product-9097783405454jk5d-89888090.jpeg
+//         const id = new mongoose.Types.ObjectId()
+//         const ext = file.mimetype.split("/")[1]
+//         cb(null, `product-${id}-${Date.now()}.${ext}`)
+//     }
+// })
+
+// set save location to buffer
+const multerStorage = multer.memoryStorage()
 
 const multerFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
@@ -42,7 +46,24 @@ const upload = multer({
     fileFilter: multerFilter
 })
 
-exports.UploadFilePhoto = upload.single('image')
+exports.UploadProductPhoto = upload.single('image')
+
+exports.ResizeProductPhoto = CatchAsync(async (req, res, next) => {
+    if (!req.file) return next()
+
+    // random id for each photo
+    const id = new mongoose.Types.ObjectId()
+
+    req.file.filename = `product-${id}-${Date.now()}.jpeg`
+
+    await sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({quality: 90})
+        .toFile(`public/img/products/${req.file.filename}`) //product-9097783405454jk5d-89888090.jpeg
+
+    next()
+})
 
 exports.GetAllProducts = CatchAsync(async (req, res, next) => {
     if (req.query.category) {
