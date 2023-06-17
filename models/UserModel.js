@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -49,7 +50,16 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.pre('save', async function(next) {
+    /*
+    run on password modify onlu
+     */
+    if (!this.isModified('password')) return next()
+
+    /*create hash with cost 12 */
+
     this.password = await bcrypt.hash(this.password, 12)
+
+    /* don't persist confirm */
     this.confirmPassword = undefined;
     next()
 })
@@ -77,6 +87,15 @@ UserSchema.methods.PasswordChangedAfter = function (jwtTimestamp) {
     }
     /* password never changed */
     return false
+}
+
+UserSchema.methods.GeneratePasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    this.passwordResetToken = crypto.createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+    this.passwordResetTokenExpiresAt = Date.now() + 10 * 60 * 1000 // expire after 10 minutes
+    return resetToken
 }
 
 module.exports = User = mongoose.model('User', UserSchema)

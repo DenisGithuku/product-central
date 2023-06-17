@@ -71,3 +71,23 @@ exports.DeleteUser = CatchAsync(async (req, res, next) => {
             message: 'Account deleted successfully'
         })
 })
+
+exports.DeactivateUser = CatchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.params.id, {active: false})
+    res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Account deactivated'
+        })
+})
+
+exports.ReactivateUser = CatchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.params.id, {active: true})
+    res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Account reactivated'
+        })
+})

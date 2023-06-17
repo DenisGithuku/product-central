@@ -3,6 +3,8 @@ const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const jwt = require("jsonwebtoken");
 const {promisify} = require('util')
+const SendMail = require(`${__dirname}/../util/EmailUtil`)
+const crypto = require('crypto')
 
 const CreateJTWToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -107,3 +109,136 @@ exports.RestrictTo = (...roles) => {
         next()
     }
 }
+
+exports.ForgotPassword = CatchAsync(async (req, res, next) => {
+    /*
+    1. Get user with email
+     */
+    const user = await User.findOne({email: req.body.email})
+
+    if (!user) {
+        return next(new AppError('There is no user with such an email address', 404))
+    }
+
+    /*
+    2. Generate random token
+     */
+    const resetToken = user.GeneratePasswordResetToken()
+    await user.save({validateBeforeSave: false})
+
+    /*
+    send password reset email
+     */
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/${resetToken}`
+    const message = `
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Password Reset</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .email-container {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <h1>Password Reset</h1>
+    <p>Dear user,</p>
+    <p>We have received a request to reset your password. To proceed with the password reset, please use the following code:</p>
+    <h2>Your Password Reset Code: <span style="color: blue;">${resetToken}</span></h2>
+    <p>If you didn't request a password reset, please ignore this email.</p>
+    <p>Thank you,</p>
+    <p>The Product Central Team</p>
+  </div>
+</body>
+</html>
+    `
+
+    try {
+        await SendMail({
+            email: user.email,
+            subject: 'PASSWORD RESET. VALID FOR (10) MINUTES',
+            message
+        })
+        res
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Password reset token sent to mail'
+            })
+    } catch (e) {
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpiresAt = undefined
+        await user.save({validateBeforeSave: false})
+        console.log(e)
+        return next(
+            new AppError('There was an error sending email. Please try again later', 500)
+        )
+    }
+})
+
+exports.ResetPassword = CatchAsync(async (req, res, next) => {
+    /*
+    Get user based on token
+     */
+    const hashedToken = crypto
+        .createHash('sha256')
+        .update(req.params.token)
+        .digest('hex')
+
+    const user = await User.findOne({passwordResetToken: hashedToken, passwordResetTokenExpiresAt: {$gt: Date.now()}})
+
+    if (!user) {
+        return next(
+            new AppError('Token invalid or expired', 400)
+        )
+    }
+
+    /*
+    save updated password
+     */
+    user.password = req.body.password
+    user.confirmPassword = req.body.passwordConfirm
+    user.passwordResetToken = undefined
+    user.passwordResetTokenExpiresAt = undefined
+    await user.save()
+
+    /*
+    Login user and send jwt
+     */
+    CreateSendToken(user, 200, res)
+})
+
+exports.UpdatePassword = CatchAsync(async (req, res, next) => {
+    /*
+    Get user from db
+     */
+    const user = await User.find(req.user.id).select("+password")
+
+    /*
+    check if posted password is correct
+     */
+    if (!await User.CheckPassword(req.body.password, user.password)) {
+        return next(
+            new AppError("Wrong password. Please try again", 400)
+        )
+    }
+
+    user.password = req.body.password
+    user.passwordConfirm = req.body.passwordConfirm
+    await user.save()
+
+    /*
+    Send new token
+     */
+    CreateSendToken(user, 200, res)
+})
