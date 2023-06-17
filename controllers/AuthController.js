@@ -142,6 +142,7 @@ exports.ForgotPassword = CatchAsync(async (req, res, next) => {
       justify-content: center;
       align-items: center;
       height: 100vh;
+      opacity: 0.7
     }
 
     .email-container {
@@ -154,7 +155,7 @@ exports.ForgotPassword = CatchAsync(async (req, res, next) => {
     <h1>Password Reset</h1>
     <p>Dear user,</p>
     <p>We have received a request to reset your password. To proceed with the password reset, please use the following code:</p>
-    <h2>Your Password Reset Code: <span style="color: blue;">${resetToken}</span></h2>
+    <h2>Your Password Reset Code: <span style="opacity: 1;">${resetToken}</span></h2>
     <p>If you didn't request a password reset, please ignore this email.</p>
     <p>Thank you,</p>
     <p>The Product Central Team</p>
