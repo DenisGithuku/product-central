@@ -1,11 +1,11 @@
 const nodemailer = require(`nodemailer`)
 
-const sendMail = async (options) => {
+const SendMail = async (options) => {
     /*
     create transporter
      */
     let transport;
-    if (process.env.DEVELOPMENT) {
+    if (process.env.NODE_ENV === 'development') {
         transport = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
@@ -15,9 +15,9 @@ const sendMail = async (options) => {
             }
         })
     }
-    if (process.env.PRODUCTION) {
+    if (process.env.NODE_ENV === 'production') {
         transport = nodemailer.createTransport({
-            service: 'gmail',
+            service: process.env.SERVICE,
             auth: {
                 user: process.env.SERVICE_EMAIL,
                 pass: process.env.SERVICE_PASSWORD
@@ -29,10 +29,10 @@ const sendMail = async (options) => {
     create mail options
      */
     const mailOptions = {
-        from: `Product Central ${process.env.SERVICE_EMAIL}`,
+        from: `Product Central <${process.env.SERVICE_EMAIL}>`,
         to: options.email,
         subject: options.subject,
-        text: options.message
+        html: options.message
     }
 
     /*
@@ -41,4 +41,4 @@ const sendMail = async (options) => {
     await transport.sendMail(mailOptions)
 }
 
-module.exports = sendMail
+module.exports = SendMail
