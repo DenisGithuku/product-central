@@ -22,17 +22,17 @@ exports.GetUserDetails = CatchAsync(async (req, res, next) => {
         })
 })
 
-exports.DeactivateAccount = CatchAsync(async (req, res, next) => {
-    await User.findByIdAndUpdate(req.params.id, {active: false})
+exports.UpdateUser = CatchAsync(async (req, res, next) => {
+    const newUser = await User.findByIdAndUpdate(req.params.id, req.body)
     res
         .status(200)
         .json({
             status: 'success',
-            message: 'Account deactivated successfully'
+            data: {newUser}
         })
 })
 
-exports.DeleteAccount = CatchAsync(async (req, res, next) => {
+exports.DeleteUser = CatchAsync(async (req, res, next) => {
     await User.findByIdAndDelete(req.params.id)
     res
         .status(200)
