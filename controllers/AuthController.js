@@ -3,7 +3,7 @@ const AppError = require(`${__dirname}/../util/AppError`)
 const CatchAsync = require(`${__dirname}/../util/CatchAsync`)
 const jwt = require("jsonwebtoken");
 const {promisify} = require('util')
-const SendMail = require(`${__dirname}/../util/EmailUtil`)
+const EmailHandler = require(`${__dirname}/../util/EmailUtil`)
 const crypto = require('crypto')
 
 const CreateJTWToken = (id) => {
@@ -36,6 +36,50 @@ exports.SignUp = CatchAsync(async (req, res, next) => {
     if (!newUser) {
         return next(new AppError('Could not register. Please try again', 400))
     }
+    const message = `
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Our Website</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .email-container {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <h1>Welcome to Product Central!</h1>
+    <p>Dear ${newUser.name.split(' ')[0]},</p>
+    <p>Thank you for joining <b style="color: cornflowerblue">Product Central</b>. We are excited to have you as a member of our community.</p>
+    <p>With our website, you can:</p>
+    <ul type="none">
+      <li>Explore a wide range of products/services</li>
+      <li>Connect with like-minded individuals</li>
+      <li>Participate in engaging discussions</li>
+      <li>Stay up-to-date with the latest news and updates</li>
+    </ul>
+    <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
+    <p>Once again, welcome aboard!</p>
+    <p>Best regards,</p>
+    <p>The Product Central Team</p>
+  </div>
+</body>
+</html>
+    `
+    await new EmailHandler({
+        to: newUser.email,
+        subject: 'WELCOME TO PRODUCT CENTRAL',
+        message: message
+    }).SendMail()
     CreateSendToken(newUser, 200, res)
 })
 
@@ -155,7 +199,7 @@ exports.ForgotPassword = CatchAsync(async (req, res, next) => {
     <h1>Password Reset</h1>
     <p>Dear user,</p>
     <p>We have received a request to reset your password. To proceed with the password reset, please use the following code:</p>
-    <h2>Your Password Reset Code: <span style="opacity: 1;">${resetToken}</span></h2>
+    <h2>Your Password Reset Token: <span style="opacity: 1;">${resetToken}</span></h2>
     <p>If you didn't request a password reset, please ignore this email.</p>
     <p>Thank you,</p>
     <p>The Product Central Team</p>
@@ -165,11 +209,11 @@ exports.ForgotPassword = CatchAsync(async (req, res, next) => {
     `
 
     try {
-        await SendMail({
-            email: user.email,
+        await new EmailHandler({
+            to: user.email,
             subject: 'PASSWORD RESET. VALID FOR (10) MINUTES',
             message
-        })
+        }).SendMail()
         res
             .status(200)
             .json({
