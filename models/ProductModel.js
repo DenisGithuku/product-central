@@ -27,10 +27,19 @@ const ProductSchema = new mongoose.Schema({
     },
     image: String,
     reviews: [mongoose.Schema.ObjectId],
+    rating: {
+        type: Number,
+        max: [5.0, 'Rating can be no more than 5.0'],
+        min: [1.0, 'Rating has to be at least 1.0'],
+        required: [true, 'Product must have a rating']
+    }
 }, {
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
 })
+
+ProductSchema.index({price: 1, rating: -1})
+ProductSchema.index({category: 1})
 
 ProductSchema.pre(/^find/, function (next) {
     this.populate({
