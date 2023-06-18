@@ -1,6 +1,6 @@
 const dotenv = require('dotenv')
 dotenv.config({path: `${__dirname}/config.env`})
-const app = require(`${__dirname}/app`)
+const app = require(`${__dirname}/api/index`)
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 

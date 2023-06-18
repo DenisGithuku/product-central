@@ -2,8 +2,9 @@
   "name": "product-central",
   "version": "1.0.0",
   "description": "Find the products you need, when you need them.",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
+    "start": "node index.js",
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
