@@ -140,3 +140,4 @@ config.env
 http-client.env.json
 rest-api.http
 scratch.http
+.vercel
