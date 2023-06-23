@@ -2,7 +2,7 @@
   "name": "product-central",
   "version": "1.0.0",
   "description": "Find the products you need, when you need them.",
-  "main": "api/index.js",
+  "main": "./api/index.js",
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon server.js",
