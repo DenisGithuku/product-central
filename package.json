@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/DenisGithuku/product-central#readme",
   "dependencies": {
+    "@vercel/analytics": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.1.3",
     "express": "^4.18.2",
